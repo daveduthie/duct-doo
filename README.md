@@ -6,7 +6,7 @@ A multimethod for [Duct](https://github.com/duct-framework/duct) to run ClojureS
 
 [![Clojars Project](https://img.shields.io/clojars/v/duct-doo.svg)](https://clojars.org/duct-doo)
 
-Add these coordinates to your build tool: `[duct-doo "0.1.0-SNAPSHOT"]`.
+Add these coordinates to your build tool: `[duct-doo "0.1.0"]`.
 
 ## Usage
 
