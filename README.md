@@ -1,6 +1,6 @@
 # duct-doo
 
-A multimethod for [Duct](https://github.com/duct-framework/duct) to run ClojureScript tests with [doo](https://github.com/bensu/doo).
+Multimethods for [Duct](https://github.com/duct-framework/duct) to run ClojureScript tests with [doo](https://github.com/bensu/doo).
 
 ## Installation
 
@@ -8,7 +8,9 @@ A multimethod for [Duct](https://github.com/duct-framework/duct) to run ClojureS
 
 Add these coordinates to your build tool: `[duct-doo "0.1.0"]`.
 
-## Usage
+> There's presently (2018-05-10) an [issue](https://github.com/emezeske/lein-cljsbuild/issues/469) when trying to compile core.rrb-vector for ClojureScript. In the mean time, you should add `:exclusions [org.clojure/core.rrb-vector]` to your project.clj, and instead depend on `[quantum/org.clojure.core.rrb-vector "0.0.12"]`.
+
+# Usage
 
 Add the `:duct-doo.runner/test` key to your integrant config:
 
@@ -26,8 +28,8 @@ Add the `:duct-doo.runner/test` key to your integrant config:
 
 - src-paths -> where cljs sources live, default src + test
 - compiler-opts -> passed through to CLJS compiler
-    - see [ClojureScript - Compiler Options](https://clojurescript.org/reference/compiler-options#asset-path) 
-    - note that `:main` keys is required
+    - see [ClojureScript - Compiler Options](https://clojurescript.org/reference/compiler-options#asset-path)
+    - note that `:main` key is required
 - doo-opts -> options to pass through to doo
     - see [doo library options](https://github.com/bensu/doo#library)
     - only `:js-env` key is treated specially
