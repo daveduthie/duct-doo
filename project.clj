@@ -1,4 +1,4 @@
-(defproject duct-doo "0.1.0"
+(defproject duct-doo "0.2.0"
   :description "An integrant multimethod for running ClojureScript tests with doo"
   :url "https://github.com/daveduthie/duct-doo"
   :license {:name "Eclipse Public License"
