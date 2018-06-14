@@ -1,3 +1,0 @@
-{:duct-doo.runner/test {:compiler-opts {:main "duct-doo.test-runner"}
-                        :test-namespaces #{duct-doo.core-test}
-                        }}

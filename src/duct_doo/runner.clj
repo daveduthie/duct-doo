@@ -1,16 +1,14 @@
 (ns duct-doo.runner
   (:require
    [cljs.build.api :as b]
+   [clojure.string :as str]
    [doo.core :as doo]
    [integrant.core :as ig]))
-
-(defonce namespaces
-  (atom #{}))
 
 (def base-doo-opts
   {:js-env  :chrome-headless
    :paths   {:karma "karma --port=9000"}
-   :verbose true
+   :verbose false
    :debug   false})
 
 (defn doo
@@ -32,22 +30,26 @@
    :cache-analysis true})
 
 (defn merge-compiler-opts
-  [base-compiler-opts compiler-opts]
+  "Doo seems to automatically make asset path absolute when targeting node"
+  [base-compiler-opts compiler-opts node?]
   (-> base-compiler-opts
       (merge compiler-opts)
       ;; Ensure asset path is absolute for the sake of the Karma test runner
-      (update :asset-path #(str path "/" %))))
+      (update :asset-path (fn [p]
+                            (if (or node? (str/starts-with? p "/"))
+                              p
+                              (str path "/" p))))))
 
 (defn compile!
   [src-paths opts]
-  (prn ::compile)
   (b/build
    (apply b/inputs (or src-paths default-src-paths))
    opts))
 
 (defn compile-and-test!
   [{:keys [src-paths compiler-opts doo-opts]}]
-  (let [opts (merge-compiler-opts base-compiler-opts compiler-opts)]
+  (let [node? (= (:js-env doo-opts) :node)
+        opts  (merge-compiler-opts base-compiler-opts compiler-opts node?)]
     (compile! src-paths opts)
     (doo (assoc doo-opts :compiler-opts opts))))
 
@@ -58,7 +60,7 @@
 ;;  :no-op?        false
 ;;  :doo-opts      {:paths  {:karma "karma --port=9000"}
 ;;                  :js-env :chrome-headless}
-;;  :compiler-opts {:main "my-project.ttest-runner"}}
+;;  :compiler-opts {:main "my-project.test-runner"}}
 
 ;; src-paths -> where cljs sources live, default src + test
 ;; compiler-opts -> passed through to CLJS compiler
@@ -68,15 +70,11 @@
 ;; karma-port -> port to run karma server on
 
 (defn test!
-  [{:keys [no-op? compiler-opts test-namespaces] :as opts}]
-  (reset! namespaces test-namespaces)
+  [{:keys [no-op? compiler-opts] :as opts}]
   (cond
-    (not (:main compiler-opts))
-    (throw (IllegalArgumentException. "No :main key specified"))
-    no-op? (prn ::no-op)
-    :else
-    #_ (throw (ex-info "foo" {}))
-    (compile-and-test! opts)))
+    (not (:main compiler-opts)) (throw (IllegalArgumentException. "No :main key specified"))
+    no-op?                      (prn ::no-op)
+    :else                       (compile-and-test! opts)))
 
 (defmethod ig/init-key ::test
   [_ opts]

@@ -5,15 +5,22 @@
    [integrant.core :as ig]
    [clojure.java.io :as io]))
 
-(def config
-  (ig/read-string (-> "config.edn" io/resource slurp)))
-
-;; (clojure.pprint/pprint config)
-
-;; (clojure.pprint/pprint (System/getProperty "java.class.path"))
-
-(def result
-  (runner/test! (:duct-doo.runner/test config)))
-
 (deftest foo->doo-test
-  (is (= 0 (:exit result))))
+  (let [config {::runner/test {:compiler-opts {:main "duct-doo.test-runner"}
+                               :doo-opts      {}}}
+        result (runner/test! (::runner/test config))]
+    (is (= 0 (:exit result)))))
+
+(deftest foo->doo-test-2
+  (let [config {::runner/test {:compiler-opts {:main "duct-doo.test-runner"}
+                               :doo-opts      {:js-env :phantom}}}
+        result (runner/test! (::runner/test config))]
+    (is (= 0 (:exit result)))))
+
+(deftest foo->doo-test-3
+  (let [config {::runner/test {:compiler-opts {:main    "duct-doo.test-runner"
+                                               :target  :nodejs
+                                               :verbose true}
+                               :doo-opts      {:js-env :node}}}
+        result (runner/test! (::runner/test config))]
+    (is (= 0 (:exit result)))))
