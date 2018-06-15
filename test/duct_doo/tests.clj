@@ -20,7 +20,8 @@
 (deftest foo->doo-test-3
   (let [config {::runner/test {:compiler-opts {:main    "duct-doo.test-runner"
                                                :target  :nodejs
-                                               :verbose true}
+                                               ;; :verbose true
+                                               }
                                :doo-opts      {:js-env :node}}}
         result (runner/test! (::runner/test config))]
     (is (= 0 (:exit result)))))

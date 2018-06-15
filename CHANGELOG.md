@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- print stdout returned by doo when a test fails
+
 ## 0.2.0 - 2018-06-14
 
 - don't make asset-path absolute when targeting node, since node wants to do this on its own

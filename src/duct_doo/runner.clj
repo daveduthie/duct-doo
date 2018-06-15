@@ -13,10 +13,11 @@
 
 (defn doo
   [opts]
-  (let [{:keys [js-env compiler-opts] :as doo-opts}
-        (merge base-doo-opts opts)]
-    (prn ::doo)
-    (doo/run-script js-env compiler-opts doo-opts)))
+  (prn ::doo)
+  (let [{:keys [js-env compiler-opts] :as doo-opts} (merge base-doo-opts opts)
+        result                                      (doo/run-script js-env compiler-opts doo-opts)]
+    (when-not (= (:exit result) 0) (println (:out result)))
+    result))
 
 (def default-src-paths ["src" "test"])
 (def path (System/getProperty "user.dir"))
@@ -27,7 +28,8 @@
    :asset-path     "target/test"
    :verbose        false ; set to true to see what's being recompiled
    :compiler-stats true
-   :cache-analysis true})
+   :cache-analysis true
+   :aot-cache      true})
 
 (defn merge-compiler-opts
   "Doo seems to automatically make asset path absolute when targeting node"
